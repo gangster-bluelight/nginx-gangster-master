@@ -1,0 +1,59 @@
+package com.gangster.nginx.core;
+
+import com.gangster.nginx.model.NginxBlockConfItem;
+import com.gangster.nginx.model.NginxCommentsConfItem;
+import com.gangster.nginx.model.NginxConfItem;
+import com.gangster.nginx.model.NginxInlineConfItem;
+
+import java.util.LinkedList;
+import java.util.List;
+
+public class NginxConfParser {
+
+    /**
+     * 解析Nginx配置文件
+     * Parse Nginx configuration file
+     * @param content
+     *      Nginx配置文件内容
+     *      Nginx configuration file content
+     * @return
+     *      解析后的Nginx配置文件元素列表
+     *      Parsed Nginx configuration file element list
+     */
+    public static List<NginxConfItem> parse(String content) {
+        content = content.replaceAll("(\n|\r\n)+\\s+\\{", " {");
+        List<NginxConfItem> items = new LinkedList<>();
+        String[] lines = content.split("\n");
+        StringBuilder block = new StringBuilder();
+        int inBlock = 0;
+        for (String line : lines) {
+            //if (block.toString().trim().startsWith("http {")){
+            //    System.out.println(inBlock);
+            //}
+
+            if (inBlock > 0){
+                block.append(line).append("\n");
+                if (!line.trim().startsWith("#") &&
+                        line.trim().matches("^\\s*(.|\\s)+\\s*\\{\\s*$")) {
+                    inBlock++;
+                }else if (!line.trim().startsWith("#") && line.trim().startsWith("}")){
+                    inBlock--;
+                    if (inBlock == 0){
+                        items.add(new NginxBlockConfItem(block.toString()));
+                        block = new StringBuilder();
+                    }
+                }
+            }else{
+                if (line.trim().startsWith("#")) {
+                    items.add(new NginxCommentsConfItem(line));
+                }else if (line.trim().matches("^\\s*(.|\\s)+\\s*\\{\\s*$")) {
+                    block.append(line).append("\n");
+                    inBlock++;
+                } else{
+                    items.add(new NginxInlineConfItem(line));
+                }
+            }
+        }
+        return items;
+    }
+}

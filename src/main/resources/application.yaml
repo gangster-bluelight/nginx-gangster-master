@@ -1,0 +1,8 @@
+server:
+  port: 8888
+  shutdown: graceful
+  servlet:
+    encoding:
+      enabled: true
+      charset: utf-8
+      force: true
