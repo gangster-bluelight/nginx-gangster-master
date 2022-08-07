@@ -47,6 +47,4 @@ public class Result {
     public static Result failure(RespCode resp) {
         return new Result(resp, null);
     }
-
-
 }

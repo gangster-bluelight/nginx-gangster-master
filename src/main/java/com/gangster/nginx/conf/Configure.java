@@ -10,7 +10,6 @@ import java.util.Properties;
  * @author gsk
  */
 public interface Configure {
-
     Properties PROPERTIES = PropertiesUtil.read("conf.properties");
 
     /**

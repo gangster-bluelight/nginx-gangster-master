@@ -1,8 +1,9 @@
 package com.gangster.nginx.entity;
 
-import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -34,6 +35,4 @@ public class Stream implements Serializable {
     private String value;
 
     private Long seq;
-
-
 }
